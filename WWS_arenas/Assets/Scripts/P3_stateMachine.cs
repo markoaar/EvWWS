@@ -4,18 +4,21 @@ using UnityEngine;
 
 public class P3_stateMachine : MonoBehaviour
 {
+    // Componentes
     private Transform cowB_T = null;
     private SpriteRenderer cowB_SR = null;
     private Animator cowB_An = null;
 
+    // Parametros
     private Vector3 floorPos;
     private Vector3 velocity;
-    private float speed = 3.5f;
+    private readonly float speed = 3.5f;
     private Vector3 gravity;
     private Vector3 jumpF;
     private bool onAir = false;
     private bool canJump = false;
 
+    // Estado
     private CBState currentState;
 
     enum CBState
@@ -45,6 +48,7 @@ public class P3_stateMachine : MonoBehaviour
 
         switch(currentState)
         {
+            #region IDLE STATE
             case CBState.IDLE_ST:
 
                 cowB_An.SetFloat("move", 0);
@@ -56,7 +60,9 @@ public class P3_stateMachine : MonoBehaviour
                 if (Input.GetKey(KeyCode.LeftShift)) currentState = CBState.ROLL_ST;
 
                 break;
+            #endregion
 
+            #region RUN STATE
             case CBState.RUN_ST:
 
                 if(Input.GetKey(KeyCode.A))
@@ -71,7 +77,6 @@ public class P3_stateMachine : MonoBehaviour
                 if (Input.GetKey(KeyCode.D))
                 {
                     cowB_SR.flipX = false;
-
                     velocity.x = speed;
                     cowB_An.SetFloat("move", velocity.x);
 
@@ -83,12 +88,13 @@ public class P3_stateMachine : MonoBehaviour
                     cowB_An.SetFloat("move", 0);
                     currentState = CBState.IDLE_ST;
                 }
-
                 if (Input.GetKey(KeyCode.Space)) currentState = CBState.JUMP_ST;
                 if (Input.GetKey(KeyCode.LeftShift)) currentState = CBState.ROLL_ST;
 
                 break;
+            #endregion
 
+            #region JUMP STATE
             case CBState.JUMP_ST:
 
                 if (Input.GetKey(KeyCode.Space) && onAir == false)
@@ -123,7 +129,9 @@ public class P3_stateMachine : MonoBehaviour
                 }
 
                 break;
+            #endregion
 
+            #region ROLL STATE
             case CBState.ROLL_ST:
 
                 if (cowB_T.position.y <= floorPos.y)
@@ -148,7 +156,6 @@ public class P3_stateMachine : MonoBehaviour
 
                             cowB_T.position += velocity * Time.deltaTime;
                         }
-
                     }
                 }
 
@@ -163,6 +170,7 @@ public class P3_stateMachine : MonoBehaviour
                 if (Input.GetKey(KeyCode.Space)) currentState = CBState.JUMP_ST;
 
                 break;
+                #endregion
         }
     }
 }
